@@ -1,4 +1,134 @@
 
+## First: what is `Consumer`?
+
+In **Java**:
+
+```java
+@FunctionalInterface
+public interface Consumer<T> {
+    void accept(T t);
+}
+```
+
+### Meaning:
+
+> A `Consumer<T>` is **something that takes a value of type `T` and returns nothing**.
+
+So:
+
+* Input → `T`
+* Output → `void`
+
+```java
+Consumer<Integer> con = new Consumer<Integer>() {
+    public void accept(Integer T) {
+        System.out.println(T);
+    }
+};
+```
+
+What this means:
+
+* You created a **Consumer**
+* Its `accept()` method prints the value
+
+So logically:
+
+```
+con.accept(90)  → prints 90
+con.accept(40)  → prints 40
+```
+
+## First: what `Predicate` really is
+
+In **Java**:
+
+```java
+@FunctionalInterface
+public interface Predicate<T> {
+    boolean test(T t);
+}
+```
+
+### Meaning:
+
+> A `Predicate<T>` is a **question** about `T`.
+
+It does **NOT transform** data.
+It only answers:
+
+```
+YES (true) or NO (false)
+```
+
+## What `filter()` actually does internally
+
+Look at the method signature:
+
+```java
+Stream<T> filter(Predicate<? super T> predicate)
+```
+
+Notice:
+
+* Input: `Predicate<T>`
+* Output: `Stream<T>` (same type!)
+
+---
+
+## How `filter()` works internally (THIS IS THE ANSWER)
+
+Your code:
+
+```java
+Stream<Integer> s2 = s1.filter(p);
+```
+
+Is logically equivalent to this:
+
+```java
+List<Integer> result = new ArrayList<>();
+
+for (Integer n : l1) {
+    if (p.test(n)) {      // boolean check
+        result.add(n);    // keep ORIGINAL number
+    }
+}
+```
+
+### 🔥 Important:
+
+* `p.test(n)` → **boolean**
+* `n` → **original number**
+* `filter()` does **not modify `n`**
+* It only decides **keep vs discard**
+
+---
+
+## Step-by-step execution (with real values)
+
+Assume:
+
+```java
+l1 = [10, 15, 20, 25]
+```
+
+### Processing:
+
+| n  | p.test(n) | Action  |
+| -- | --------- | ------- |
+| 10 | true      | keep 10 |
+| 15 | false     | discard |
+| 20 | true      | keep 20 |
+| 25 | false     | discard |
+
+### Resulting stream:
+
+```
+[10, 20]
+```
+
+
 
 ```java
 // 1. Convert to IntStream

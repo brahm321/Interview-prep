@@ -1744,7 +1744,150 @@ We touched on this earlier, but here is the definitive, one-sentence answer you 
 - **Hibernate:** Lives in the `org.hibernate.*` package. It provides the actual engine that translates your Java objects into SQL queries.
     
 
-_(Note: If you use Spring Data JPA, Spring acts as a third layer of abstraction that writes the boilerplate JPA code for you)._
+_(Note: If you use Spring Data JPA, Spring acts as a third layer of abstraction that writes the boilerplate JPA code for you).
+
+
+✅ Custom Query in Spring Data JPA — Two Ways
+
+#### 🔹 **1. Method Naming Convention (Magic Query)**
+You don’t need to write queries manually. Spring generates them based on method names!
+
+```java
+List<Student> findByName(String name);                    // WHERE name = ?
+List<Student> findByMarksGreaterThan(int marks);         // WHERE marks > ?
+List<Student> findByNameAndMarks(String name, int marks); // WHERE name = ? AND marks = ?
+```
+
+> 🧠 Rule: Method name = `findBy` + field name(s) + operation
+
+Spring sees this and auto-creates SQL behind the scenes.
+
+---
+
+#### 🔹 **2. Custom Query Using `@Query` Annotation**
+If you want more control (joins, custom logic etc.), you can write:
+
+```java
+@Query("SELECT s FROM Student s WHERE s.name = :name")
+List<Student> getStudentsByName(@Param("name") String name);
+```
+
+📝 **Notes:**
+- Use **Java field names**, not column names in the query.
+- `s.name` → refers to `private String name;` in your entity.
+
+---
+
+### ⚡ Bonus: You can also use native SQL
+```java
+@Query(value = "SELECT * FROM student WHERE marks > ?1", nativeQuery = true)
+List<Student> getHighScoringStudents(int marks);
+```
+
+---
+
+### 🧠 I learned this:
+> In Spring Data JPA, I can create custom queries using either method naming conventions like `findByName()` or using `@Query` for more complex logic. Spring uses my entity’s field names, not table columns.
+
+
+Bilkul sahi bhai! 💯
+
+Here’s a crisp breakdown for **update** and **delete** in Spring Data JPA:
+
+---
+
+### ✅ **Delete in Spring Data JPA**
+
+#### 🔹 Delete by object:
+```java
+repo.delete(student);  // Pass the entity object
+```
+
+#### 🔹 Delete by ID:
+```java
+repo.deleteById(1);    // Deletes student with roll = 1
+```
+
+#### 🔹 Delete all:
+```java
+repo.deleteAll();
+```
+
+---
+
+### ✅ **Update in Spring Data JPA**
+
+There’s **no separate method** for update — you use `save()` again:
+
+```java
+Student s = repo.findById(1).get();
+s.setMarks(95);
+repo.save(s);  // Acts as update if ID exists
+```
+
+> ✨ If the ID already exists → it updates  
+> If the ID is new → it inserts
+
+---
+
+### 🧠 I learned this:
+> In Spring Data JPA, `repo.delete()` or `deleteById()` removes data. For updating, `save()` works again — if the primary key exists, it updates; else, it inserts.
+
+Bhai yeh raha tera **short summary of key points for JPA** — quick and clean:
+
+---
+
+### ✅ **Spring Data JPA – Key Points to Remember**
+
+1. **Entity class banani hoti hai**  
+   - Annotate with `@Entity`
+   - Should have a default (no-arg) constructor  
+   - At least one field marked as `@Id`
+
+2. **Repository banani hoti hai**  
+   - Interface extends `JpaRepository<Entity, IdType>`
+   - Spring automatically implements basic CRUD
+
+3. **Application.properties config:**
+   properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/dbname
+   spring.datasource.username=postgres
+   spring.datasource.password=yourpass
+   spring.jpa.hibernate.ddl-auto=update
+   spring.jpa.show-sql=true
+   
+4. **Beans injection:**
+   - Use `@Autowired` to inject `Repo` or `Service`
+   - Use `@Component` and `@Scope("prototype")` if manually creating beans
+
+5. **Saving data:**
+   - Use `repo.save(entityObj)`  
+   - Works for both insert and update
+
+6. **Fetching data:**
+   - `repo.findAll()`
+   - `repo.findById(id)` returns `Optional<Entity>`
+
+7. **Custom Queries:**
+   - Spring magic: `findByName`, `findByMarksGreaterThan`
+   - Or use `@Query("SELECT s FROM Student s WHERE s.name = :name")`
+
+8. **Deleting data:**
+   - `repo.delete(entityObj)` or `repo.deleteById(id)`
+
+### 📝 **Learning Note**
+You explored **Spring Data** and realized how powerful and convenient it is. By just:
+- Removing the Service and Controller layers,
+- Adding a **Repository interface**,
+- Including **Spring Data JPA** in your `pom.xml`,
+
+You were able to:
+- Access all auto-generated REST endpoints,
+- Perform basic CRUD operations effortlessly by simply running the app on port **8080**,
+- Use Spring Data’s magic to skip boilerplate code and get things done faster.
+
+Spring Data REST exposing repositories automatically like that is incredibly useful for prototyping and admin tools!
+
 
 ---
 

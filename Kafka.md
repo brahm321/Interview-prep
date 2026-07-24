@@ -38,7 +38,6 @@ Your example of using partitions for "North Indian rides" vs. "South Indian ride
 
 ### 2. Consumer & Consumer Group Logic
 
-
 - **4 Partitions, 4 Consumers:** Correct. A perfect 1-to-1 balance for maximum parallel processing.
     
 - **4 Partitions, 5 Consumers:** Correct. One consumer will be **idle**, waiting for another to drop. Kafka ensures this.
@@ -2582,6 +2581,28 @@ ErrorHandlingDeserializer
     
 - **Schema Registry:** Because Avro data is raw binary, consumers cannot read it without a blueprint. The Confluent Schema Registry acts as an external hub that stores and version-controls these blueprints (schemas). The producer sends the schema to the registry and embeds a lightweight 4-byte Schema ID in the Kafka message. The consumer reads that ID, fetches the corresponding schema from the registry, caches it, and safely decodes the binary stream. This enforces a strict API contract between microservices and prevents malformed data from breaking downstream applications.
 
+**Step A: The Producer's Job**
+
+1. Before sending a message, the Producer checks if the schema for this event already exists in the Schema Registry.
+    
+2. If it doesn't, the Producer registers the schema.
+    
+3. The Schema Registry saves this JSON blueprint, assigns it a unique integer (the **Schema ID**), and sends that ID back to the Producer.
+    
+4. The Producer then takes the raw binary Avro data, prepends a tiny **4-byte Schema ID** to the front of it, and sends _that_ package to Kafka.
+    
+
+**Step B: The Consumer's Job**
+
+1. The Consumer pulls the message from Kafka.
+    
+2. It reads the first 4 bytes to extract the Schema ID.
+    
+3. The Consumer asks the Schema Registry: _"Hey, give me the blueprint for ID #105."_
+    
+4. **Crucial Detail:** The Consumer does _not_ do this for every message. That would crash the Registry. Instead, it fetches the schema once and **caches it in local memory**.
+    
+5. Using the cached blueprint, the Consumer safely parses the raw binary data back into usable objects in its code.
 
 ### The Two Types of Offsets You Need to Know
 

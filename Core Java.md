@@ -1,4 +1,4 @@
- **24/09/2024**
+  **24/09/2024**
 
 ![[Screenshot 2024-09-24 at 23.17.46.png]]
 So basically i will write a java code (.java file) then it gets compiled by java compiler (javac) then it will get converted to byte code that .class file, then JVM will run the byte code for only one and will run only that file that has a signature in our case it is public static void main ( String a [ ]) then it will run it with the libraries installed within . JDK ke ander JRE ke and uske ander JVM and Java can run only in those environment that JRE and JDK so it’s not totally platform depenedent. but if you write code it can run everywhere that’s why java called write once run everywhere.
@@ -2865,8 +2865,6 @@ public class JDBCDemo
 ✅ **`PreparedStatement` is safer** → Prevents injection, faster, handles dynamic values better.  
 
 
-🔥 Now that you understand caching, are you ready to dive into **HQL/JPQL Queries?** 🚀😃
-
 Spring = core framework  
 Spring Boot = auto-config + faster setup
 
@@ -4616,8 +4614,7 @@ Bhai yeh raha tera **short summary of key points for JPA** — quick and clean:
    spring.datasource.password=yourpass
    spring.jpa.hibernate.ddl-auto=update
    spring.jpa.show-sql=true
-   ```
-
+   
 4. **Beans injection:**
    - Use `@Autowired` to inject `Repo` or `Service`
    - Use `@Component` and `@Scope("prototype")` if manually creating beans
@@ -4636,8 +4633,6 @@ Bhai yeh raha tera **short summary of key points for JPA** — quick and clean:
 
 8. **Deleting data:**
    - `repo.delete(entityObj)` or `repo.deleteById(id)`
-
-
 
 ### 📝 **Learning Note**
 You explored **Spring Data** and realized how powerful and convenient it is. By just:

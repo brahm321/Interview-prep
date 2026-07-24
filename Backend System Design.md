@@ -1,8 +1,8 @@
-Here is a **clean interview-revision note** for these **Microservices core architecture concepts**.
+Here is a **clean interview-revision note** for these **Microservice core architecture concepts**.
 
 ---
 
-# Microservices – Core Architecture (Quick Notes)
+# Microservice – Core Architecture (Quick Notes)
 
 ## 1. Monolith vs Microservices
 
